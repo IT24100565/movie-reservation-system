@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head('Manage Users')">
+    <style>
+        /* Professional dark theme styling */
+        body {
+            background-color: #121212;
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .admin-container {
+            max-width: 100%;
+            padding: 20px;
+        }
+        
+        .header-section {
+            background: linear-gradient(90deg, #1a1a1a 0%, #2d2d2d 100%);
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .header-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #e50914;
+        }
+        
+        .header-subtitle {
+            font-size: 16px;
+            color: #aaa;
+            margin-bottom: 0;
+        }
+        
+        .btn-add-user {
+            background: linear-gradient(135deg, #e50914 0%, #ff4757 100%);
+            border: none;
+            border-radius: 8px;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-add-user:hover {
+            background: linear-gradient(135deg, #c4080f 0%, #e8434d 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(229, 9, 20, 0.3);
+        }
+        
+        .admin-card {
+            background-color: #1e1e1e;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        
+        .table-responsive {
+            overflow-x: hidden;
+        }
+        
+        .admin-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            color: #ffffff;
+        }
+        
+        .admin-table thead {
+            background-color: #2d2d2d;
+        }
+        
+        .admin-table th {
+            padding: 18px 20px;
+            text-align: left;
+            font-weight: 600;
+            color: #e50914;
+            text-transform: uppercase;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+        }
+        
+        .admin-table tbody tr {
+            border-bottom: 1px solid #333;
+            transition: background-color 0.2s ease;
+        }
+        
+        .admin-table tbody tr:hover {
+            background-color: #2a2a2a;
+        }
+        
+        .admin-table td {
+            padding: 16px 20px;
+            vertical-align: middle;
+        }
+        
+        .user-name-cell {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-icon {
+            color: #e50914;
+            font-size: 20px;
+            margin-right: 15px;
+        }
+        
+        .user-name {
+            font-weight: 600;
+            font-size: 16px;
+        }
+        
+        .admin-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.5rem 1.2rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .badge-active {
+            background: linear-gradient(135deg, #28a745 0%, #34ce57 100%);
+            color: white;
+        }
+        
+        .badge-suspended {
+            background: linear-gradient(135deg, #ffc107 0%, #ffb700 100%);
+            color: #212529;
+        }
+        
+        .badge-info {
+            background: linear-gradient(135deg, #17a2b8 0%, #1fc8e3 100%);
+            color: white;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+        
+        .btn-action {
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn-action:active {
+            transform: translateY(0);
+        }
+        
+        .btn-edit {
+            background: linear-gradient(135deg, #007bff 0%, #3399ff 100%);
+            color: white;
+        }
+        
+        .btn-edit:hover {
+            background: linear-gradient(135deg, #0069d9 0%, #007bff 100%);
+            box-shadow: 0 6px 15px rgba(0, 123, 255, 0.3);
+        }
+        
+        .btn-toggle {
+            background: linear-gradient(135deg, #6f42c1 0%, #8a6ccd 100%);
+            color: white;
+        }
+        
+        .btn-toggle:hover {
+            background: linear-gradient(135deg, #5a32a3 0%, #6f42c1 100%);
+            box-shadow: 0 6px 15px rgba(111, 66, 193, 0.3);
+        }
+        
+        .btn-delete {
+            background: linear-gradient(135deg, #dc3545 0%, #e55353 100%);
+            color: white;
+        }
+        
+        .btn-delete:hover {
+            background: linear-gradient(135deg, #c82333 0%, #d62c1a 100%);
+            box-shadow: 0 6px 15px rgba(220, 53, 69, 0.3);
+        }
+        
+        /* Modal Styling */
+        .modal-content {
+            background-color: #1e1e1e;
+            border: none;
+            border-radius: 10px;
+            color: white;
+        }
+        
+        .modal-header {
+            border-bottom: 1px solid #333;
+            padding: 20px 25px;
+        }
+        
+        .modal-title {
+            font-size: 36px;
+            font-weight: 700;
+            color: #e50914;
+        }
+        
+        .btn-close {
+            filter: invert(1);
+        }
+        
+        .modal-body {
+            padding: 25px;
+        }
+        
+        .modal-footer {
+            border-top: 1px solid #333;
+            padding: 20px 25px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #ddd;
+            font-size: 1.4rem;
+        }
+        
+        .form-control, .form-select {
+            width: 100%;
+            padding: 1.25rem 1.5rem;
+            background-color: #2d2d2d;
+            border: 1px solid #444;
+            border-radius: 6px;
+            color: white;
+            font-size: 1.4rem;
+            transition: border-color 0.3s ease;
+            min-height: 4rem;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            outline: none;
+            border-color: #e50914;
+            box-shadow: 0 0 0 3px rgba(229, 9, 20, 0.25);
+        }
+        
+        .form-control::placeholder {
+            color: #777;
+        }
+        
+        .btn-modal {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-modal:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn-modal:active {
+            transform: translateY(0);
+        }
+        
+        .btn-modal-secondary {
+            background: linear-gradient(135deg, #6c757d 0%, #868e96 100%);
+            color: white;
+        }
+        
+        .btn-modal-secondary:hover {
+            background: linear-gradient(135deg, #5a6268 0%, #6c757d 100%);
+            box-shadow: 0 6px 15px rgba(108, 117, 125, 0.3);
+        }
+        
+        .btn-modal-primary {
+            background: linear-gradient(135deg, #e50914 0%, #ff4757 100%);
+            color: white;
+        }
+        
+        .btn-modal-primary:hover {
+            background: linear-gradient(135deg, #c4080f 0%, #e8434d 100%);
+            box-shadow: 0 6px 15px rgba(229, 9, 20, 0.3);
+        }
+        
+        .btn-modal-danger {
+            background: linear-gradient(135deg, #dc3545 0%, #e55353 100%);
+            color: white;
+        }
+        
+        .btn-modal-danger:hover {
+            background: linear-gradient(135deg, #c82333 0%, #d62c1a 100%);
+            box-shadow: 0 6px 15px rgba(220, 53, 69, 0.3);
+        }
+        
+        .btn-modal-success {
+            background: linear-gradient(135deg, #28a745 0%, #34ce57 100%);
+            color: white;
+        }
+        
+        .btn-modal-success:hover {
+            background: linear-gradient(135deg, #218838 0%, #28a745 100%);
+            box-shadow: 0 6px 15px rgba(40, 167, 69, 0.3);
+        }
+        
+        .alert {
+            border-radius: 6px;
+            font-weight: 500;
+        }
+        
+        /* Ensure modals are properly hidden when not active */
+        .modal {
+            display: none !important;
+        }
+        
+        .modal.show {
+            display: block !important;
+        }
+        
+        .modal:not(.show) {
+            display: none !important;
+        }
+        
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .header-section {
+                padding: 20px;
+            }
+            
+            .header-title {
+                font-size: 24px;
+            }
+            
+            .admin-table th, .admin-table td {
+                padding: 12px 15px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body class="bg-dark">
+
+<!-- Top Navigation Bar -->
+<div th:replace="fragments/top-navbar :: top-navbar"></div>
+
+<!-- Page Content -->
+<div class="container-fluid admin-container">
+    <!-- Header Section -->
+    <div class="header-section">
+        <div class="d-flex justify-content-between align-items-center flex-wrap">
+            <div class="mb-3 mb-md-0">
+                <h1 class="header-title">Manage Users</h1>
+                <p class="header-subtitle">View and manage user status (Read-only access)</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Users Table -->
+    <div class="admin-card">
+        <div class="table-responsive">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="usersTableBody">
+                    <!-- Data will be loaded here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+let users = [];
+
+// Load users on page load
+document.addEventListener('DOMContentLoaded', function() {
+    loadUsers();
+    setupEventListeners();
+});
+
+// Setup event listeners
+function setupEventListeners() {
+    // No add/edit/delete buttons in read-only mode
+}
+
+// Hide all modals (simplified for read-only mode)
+function hideAllModals() {
+    // No modals in read-only mode
+}
+
+// Load users from API
+function loadUsers() {
+    fetch('/api/users')
+        .then(res => res.json())
+        .then(data => {
+            users = data;
+            displayUsers();
+        })
+        .catch(error => {
+            console.error('Error loading users:', error);
+            showAlert('Error loading users', 'danger');
+        });
+}
+
+// Display users in table
+function displayUsers() {
+    const tbody = document.querySelector('#usersTableBody');
+    tbody.innerHTML = users.map(user => `
+        <tr>
+            <td>
+                <span class="cell-muted fw-bold">#${user.userId}</span>
+            </td>
+            <td>
+                <div class="user-name-cell">
+                    <i class="fas fa-user user-icon"></i>
+                    <span class="user-name cell-highlight">${user.name}</span>
+                </div>
+            </td>
+            <td>
+                <span class="cell-primary fw-medium">${user.email}</span>
+            </td>
+            <td>
+                <span class="admin-badge badge-info">${user.role}</span>
+            </td>
+            <td>
+                <span class="admin-badge ${user.status === 'ACTIVE' ? 'badge-active' : 'badge-suspended'}">
+                    ${user.status}
+                </span>
+            </td>
+            <td>
+                <div class="action-buttons">
+                    <button class="btn-action btn-toggle" data-user-id="${user.userId}" data-user-name="${user.name}" data-user-status="${user.status}">
+                        <i class="fas fa-user-${user.status === 'ACTIVE' ? 'slash' : 'check'}"></i>Toggle
+                    </button>
+                </div>
+            </td>
+        </tr>
+    `).join('');
+    
+    // Add event listeners to toggle buttons
+    document.querySelectorAll('.btn-toggle').forEach(button => {
+        button.addEventListener('click', function() {
+            const userId = parseInt(this.getAttribute('data-user-id'));
+            const userName = this.getAttribute('data-user-name');
+            const userStatus = this.getAttribute('data-user-status');
+            toggleUserStatus(userId, userName, userStatus);
+        });
+    });
+}
+
+// Toggle user status
+function toggleUserStatus(userId, userName, currentStatus) {
+    const newStatus = currentStatus === 'ACTIVE' ? 'SUSPENDED' : 'ACTIVE';
+    const action = newStatus === 'ACTIVE' ? 'activate' : 'suspend';
+    
+    if (confirm(`Are you sure you want to ${action} user "${userName}"?`)) {
+        fetch(`/api/users/${userId}/toggle-status`, {
+            method: 'PUT'
+        })
+        .then(response => {
+            if (response.ok) {
+                showAlert(`User ${action}d successfully!`, 'success');
+                loadUsers();
+            } else {
+                throw new Error(`Failed to ${action} user`);
+            }
+        })
+        .catch(error => {
+            console.error(`Error ${action}ing user:`, error);
+            showAlert(`Error ${action}ing user: ` + error.message, 'danger');
+        });
+    }
+}
+
+// Show alert function
+function showAlert(message, type) {
+    // Remove any existing alerts
+    const existingAlert = document.querySelector('.custom-alert');
+    if (existingAlert) {
+        existingAlert.remove();
+    }
+    
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${type} alert-dismissible fade show custom-alert position-fixed`;
+    alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+    alertDiv.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    document.body.appendChild(alertDiv);
+
+    setTimeout(() => {
+        if (alertDiv.parentNode) {
+            alertDiv.parentNode.removeChild(alertDiv);
+        }
+    }, 5000);
+}
+</script>
+
+</body>
+</html>

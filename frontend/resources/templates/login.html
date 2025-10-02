@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head('Login - CineMax Admin')"></head>
+<body class="login-body">
+    <!-- Background Animation -->
+    <div class="login-background">
+        <div class="floating-elements">
+            <div class="floating-element"></div>
+            <div class="floating-element"></div>
+            <div class="floating-element"></div>
+            <div class="floating-element"></div>
+            <div class="floating-element"></div>
+        </div>
+    </div>
+
+    <!-- Login Container -->
+    <div class="login-container">
+        <div class="login-card">
+            <!-- Logo Section -->
+            <div class="login-header">
+                <div class="cinemax-logo">
+                    <i class="fas fa-film login-film-icon"></i>
+                    <h1 class="cinemax-title">CineMax</h1>
+                </div>
+            </div>
+
+            <!-- Error Alert -->
+            <div th:if="${error}" class="login-alert" th:text="${error}"></div>
+            
+            <!-- Session Expiration Warning -->
+            <div th:if="${warning}" class="login-alert warning-alert" th:text="${warning}"></div>
+
+            <!-- Login Form -->
+            <form th:action="@{/login}" th:object="${loginRequest}" method="post" class="login-form">
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-user"></i>
+                        Username
+                    </label>
+                    <input type="text" th:field="*{username}" class="form-control login-input"
+                           placeholder="Enter your username" required/>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-lock"></i>
+                        Password
+                    </label>
+                    <input type="password" th:field="*{password}" class="form-control login-input"
+                           placeholder="Enter your password" required/>
+                </div>
+
+                <button type="submit" class="login-btn">
+                    <span class="btn-text">Log In</span>
+                    <i class="fas fa-arrow-right btn-icon"></i>
+                </button>
+            </form>
+
+            <!-- Footer -->
+            <div class="login-footer">
+                <p class="footer-text">© 2025 CineMax Admin Panel. All rights reserved.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+            <p>Signing you in...</p>
+        </div>
+    </div>
+
+    <script>
+        // Add loading animation on form submit
+        document.querySelector('.login-form').addEventListener('submit', function() {
+            document.getElementById('loadingOverlay').style.display = 'flex';
+        });
+
+        // Add floating animation to elements
+        const elements = document.querySelectorAll('.floating-element');
+        elements.forEach((element, index) => {
+            element.style.animationDelay = `${index * 0.5}s`;
+        });
+    </script>
+</body>
+</html>

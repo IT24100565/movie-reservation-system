@@ -1,0 +1,28 @@
+<nav th:fragment="top-navbar" class="admin-top-navbar bg-dark text-white px-4 py-3" 
+     style="box-shadow: 0 2px 10px rgba(0,0,0,0.3); position: sticky; top: 0; z-index: 1000;">
+    
+        <div class="navbar-grid">
+            <!-- CineMax Logo (Left Corner) -->
+            <div class="navbar-logo">
+                <i class="fas fa-film text-danger me-2" style="font-size: 2.2rem;"></i>
+                <h2 class="mb-0 fw-bold text-white" style="font-size: 1.8rem;">CineMax</h2>
+            </div>
+        
+            <!-- Navigation Links (Center) -->
+            <div class="navbar-links">
+                <a class="nav-link text-white fw-medium" th:href="@{/admin/dashboard}">Home</a>
+                <a class="nav-link text-white fw-medium" th:href="@{/admin/movies}">Movies</a>
+                <a class="nav-link text-white fw-medium" th:href="@{/admin/showtimes}">Showtimes</a>
+                <a class="nav-link text-white fw-medium" th:href="@{/admin/users}">Users</a>
+                <a class="nav-link text-white fw-medium" th:href="@{/admin/admins}">Admins</a>
+                <a class="nav-link text-white fw-medium" th:href="@{/admin/logs}">Logs</a>
+            </div>
+        
+            <!-- Logout Button (Right) -->
+            <div class="navbar-logout">
+                <a th:href="@{/logout}" class="btn btn-danger px-4 py-2 rounded-2 fw-semibold">
+                    <i class="fas fa-sign-out-alt me-2"></i>Logout
+                </a>
+            </div>
+        </div>
+</nav>

@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<th:block th:replace="fragments/head :: head('User Dashboard')"></th:block>
+<body>
+
+<section class="container py-5">
+    <h2>Welcome Back, <span th:text="${session.username}"></span>!</h2>
+    <p class="lead">Enjoy exclusive content as a registered user.</p>
+    <a th:href="@{/logout}" class="btn btn-danger mt-3">Logout</a>
+</section>
+
+<div th:replace="fragments/footer :: footer"></div>
+</body>
+</html>
