@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Update Booking</title>
+</head>
+<body>
+    <h1>Test Update Booking</h1>
+    <button onclick="testUpdate()">Test Update Booking</button>
+    <div id="result"></div>
+
+    <script>
+        async function testUpdate() {
+            try {
+                const response = await fetch('/api/bookings/1/seats', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        showtimeId: 2,
+                        seats: ['A1', 'A2']
+                    })
+                });
+                
+                const result = await response.json();
+                document.getElementById('result').innerHTML = '<pre>' + JSON.stringify(result, null, 2) + '</pre>';
+            } catch (error) {
+                document.getElementById('result').innerHTML = '<pre>Error: ' + error.message + '</pre>';
+            }
+        }
+    </script>
+</body>
+</html>

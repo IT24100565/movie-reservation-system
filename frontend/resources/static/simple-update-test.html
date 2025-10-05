@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Booking Update Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 4px; }
+        button { padding: 10px 15px; margin: 5px; cursor: pointer; background: #007bff; color: white; border: none; border-radius: 4px; }
+        button:hover { background: #0056b3; }
+        input, select { padding: 8px; margin: 5px; border: 1px solid #ddd; border-radius: 4px; }
+        .success { color: green; background: #d4edda; padding: 10px; border-radius: 4px; margin: 10px 0; }
+        .error { color: red; background: #f8d7da; padding: 10px; border-radius: 4px; margin: 10px 0; }
+        pre { background: #f8f9fa; padding: 10px; overflow: auto; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Simple Booking Update Test</h1>
+        <p>This page tests the new simplified booking update functionality.</p>
+        
+        <div class="test-section">
+            <h2>Update Booking Showtime Only</h2>
+            <label>Booking ID: <input type="number" id="showtimeBookingId" value="1" /></label>
+            <label>New Showtime ID: <input type="number" id="newShowtimeId" value="2" /></label>
+            <button onclick="updateShowtime()">Update Showtime</button>
+            <div id="showtimeResult"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>Update Booking with New Showtime and Seats</h2>
+            <label>Booking ID: <input type="number" id="seatsBookingId" value="1" /></label>
+            <label>New Showtime ID: <input type="number" id="seatsShowtimeId" value="2" /></label>
+            <label>New Seats (comma separated): <input type="text" id="newSeats" value="A1,A2" /></label>
+            <button onclick="updateSeats()">Update Showtime and Seats</button>
+            <div id="seatsResult"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>Current Bookings</h2>
+            <button onclick="listBookings()">List All Bookings</button>
+            <div id="bookingsList"></div>
+        </div>
+    </div>
+
+    <script>
+        async function updateShowtime() {
+            const bookingId = document.getElementById('showtimeBookingId').value;
+            const showtimeId = document.getElementById('newShowtimeId').value;
+            const resultDiv = document.getElementById('showtimeResult');
+            
+            resultDiv.innerHTML = '<p>Updating showtime...</p>';
+            
+            try {
+                const response = await fetch(`/api/bookings/${bookingId}/showtime`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        showtimeId: parseInt(showtimeId)
+                    })
+                });
+                
+                const result = await response.json();
+                if (response.ok) {
+                    resultDiv.innerHTML = `<div class="success"><strong>Success!</strong> Showtime updated.<br>Response: <pre>${JSON.stringify(result, null, 2)}</pre></div>`;
+                } else {
+                    resultDiv.innerHTML = `<div class="error"><strong>Error:</strong> ${response.status} - ${response.statusText}<br>Response: <pre>${JSON.stringify(result, null, 2)}</pre></div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error"><strong>Error:</strong> ${error.message}</div>`;
+            }
+        }
+        
+        async function updateSeats() {
+            const bookingId = document.getElementById('seatsBookingId').value;
+            const showtimeId = document.getElementById('seatsShowtimeId').value;
+            const seatsInput = document.getElementById('newSeats').value;
+            const seats = seatsInput.split(',').map(s => s.trim()).filter(s => s.length > 0);
+            const resultDiv = document.getElementById('seatsResult');
+            
+            resultDiv.innerHTML = '<p>Updating showtime and seats...</p>';
+            
+            try {
+                const response = await fetch(`/api/bookings/${bookingId}/seats`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        showtimeId: parseInt(showtimeId),
+                        seats: seats
+                    })
+                });
+                
+                const result = await response.json();
+                if (response.ok) {
+                    resultDiv.innerHTML = `<div class="success"><strong>Success!</strong> Showtime and seats updated.<br>Response: <pre>${JSON.stringify(result, null, 2)}</pre></div>`;
+                } else {
+                    resultDiv.innerHTML = `<div class="error"><strong>Error:</strong> ${response.status} - ${response.statusText}<br>Response: <pre>${JSON.stringify(result, null, 2)}</pre></div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error"><strong>Error:</strong> ${error.message}</div>`;
+            }
+        }
+        
+        async function listBookings() {
+            const resultDiv = document.getElementById('bookingsList');
+            resultDiv.innerHTML = '<p>Loading bookings...</p>';
+            
+            try {
+                const response = await fetch('/api/bookings?userId=1');
+                const bookings = await response.json();
+                resultDiv.innerHTML = `<pre>${JSON.stringify(bookings, null, 2)}</pre>`;
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error"><strong>Error:</strong> ${error.message}</div>`;
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Comprehensive Booking Update Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ccc; }
+        button { padding: 10px 15px; margin: 5px; cursor: pointer; }
+        .success { color: green; }
+        .error { color: red; }
+        pre { background: #f5f5f5; padding: 10px; overflow: auto; }
+    </style>
+</head>
+<body>
+    <h1>Comprehensive Booking Update Test</h1>
+    
+    <div class="test-section">
+        <h2>Test 1: Update Booking with New Showtime and Seats</h2>
+        <button onclick="testUpdateWithShowtimeAndSeats()">Run Test</button>
+        <div id="result1"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Test 2: Update Booking with Showtime Only</h2>
+        <button onclick="testUpdateShowtimeOnly()">Run Test</button>
+        <div id="result2"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Test 3: Update Booking with Seats Only</h2>
+        <button onclick="testUpdateSeatsOnly()">Run Test</button>
+        <div id="result3"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Current Bookings</h2>
+        <button onclick="listBookings()">List Bookings</button>
+        <div id="bookingsList"></div>
+    </div>
+
+    <script>
+        async function testUpdateWithShowtimeAndSeats() {
+            const resultDiv = document.getElementById('result1');
+            resultDiv.innerHTML = '<p>Running test...</p>';
+            
+            try {
+                const response = await fetch('/api/bookings/1/seats', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        showtimeId: 2,
+                        seats: ['A1', 'A2']
+                    })
+                });
+                
+                const result = await response.json();
+                if (response.ok) {
+                    resultDiv.innerHTML = '<p class="success">Test PASSED: ' + JSON.stringify(result, null, 2) + '</p>';
+                } else {
+                    resultDiv.innerHTML = '<p class="error">Test FAILED: ' + JSON.stringify(result, null, 2) + '</p>';
+                }
+            } catch (error) {
+                resultDiv.innerHTML = '<p class="error">Test FAILED with exception: ' + error.message + '</p>';
+            }
+        }
+        
+        async function testUpdateShowtimeOnly() {
+            const resultDiv = document.getElementById('result2');
+            resultDiv.innerHTML = '<p>Running test...</p>';
+            
+            try {
+                const response = await fetch('/api/bookings/1/showtime', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        showtimeId: 3
+                    })
+                });
+                
+                const result = await response.json();
+                if (response.ok) {
+                    resultDiv.innerHTML = '<p class="success">Test PASSED: ' + JSON.stringify(result, null, 2) + '</p>';
+                } else {
+                    resultDiv.innerHTML = '<p class="error">Test FAILED: ' + JSON.stringify(result, null, 2) + '</p>';
+                }
+            } catch (error) {
+                resultDiv.innerHTML = '<p class="error">Test FAILED with exception: ' + error.message + '</p>';
+            }
+        }
+        
+        async function testUpdateSeatsOnly() {
+            const resultDiv = document.getElementById('result3');
+            resultDiv.innerHTML = '<p>Running test...</p>';
+            
+            try {
+                const response = await fetch('/api/bookings/1/seats', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        showtimeId: 1,  // Keep same showtime
+                        seats: ['B1', 'B2', 'B3']
+                    })
+                });
+                
+                const result = await response.json();
+                if (response.ok) {
+                    resultDiv.innerHTML = '<p class="success">Test PASSED: ' + JSON.stringify(result, null, 2) + '</p>';
+                } else {
+                    resultDiv.innerHTML = '<p class="error">Test FAILED: ' + JSON.stringify(result, null, 2) + '</p>';
+                }
+            } catch (error) {
+                resultDiv.innerHTML = '<p class="error">Test FAILED with exception: ' + error.message + '</p>';
+            }
+        }
+        
+        async function listBookings() {
+            const resultDiv = document.getElementById('bookingsList');
+            resultDiv.innerHTML = '<p>Loading bookings...</p>';
+            
+            try {
+                const response = await fetch('/api/bookings?userId=1');
+                const bookings = await response.json();
+                resultDiv.innerHTML = '<pre>' + JSON.stringify(bookings, null, 2) + '</pre>';
+            } catch (error) {
+                resultDiv.innerHTML = '<p class="error">Failed to load bookings: ' + error.message + '</p>';
+            }
+        }
+    </script>
+</body>
+</html>
